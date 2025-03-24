@@ -3,30 +3,269 @@ backend:
     branch: main
 
 local_backend: true
-# change url to a link to the image you want to use, no file paths, must be a URL
-logo_url: https://codestitch.app/frontend/images/logo.png
 
-media_folder: "src/assets/images/blog"
-public_folder: "/assets/images/blog"
+# Change url to a link to the image you want to use, no file paths, must be a URL
+logo_url: "https://codestitch.app/frontend/images/logo.png"
+
+# Where should uploaded files be saved
+media_folder: src/assets/images/cms
+
+# Where should media be served, relative to the base of the built site
+public_folder: /assets/images/cms
 
 collections:
-    - name: "blog"
-      label: "Blog"
-      folder: "src/content/blog"
+    # SETTINGS CONFIG
+    - label: Settings
+      name: settings
+      delete: false
+      editor:
+          preview: false
+      files:
+          - label: Website Settings
+            name: website_settings
+            file: src/_data/client.json
+            description: Allows a client to update their own contact information, through the default client.json file
+            fields:
+                - label: Business Name
+                  name: name
+                  widget: string
+                  summary: Used in browser tab and sharing links
+
+                - label: Email
+                  name: email
+                  widget: string
+                  summary: Main email for customers to contact you
+
+                - label: Unformatted Telephone
+                  name: phoneForTel
+                  widget: string
+                  summary: Used for clickable links to phone. Enter in format xxx-xxx-xxxx
+
+                - label: Formatted Telephone
+                  name: phoneFormatted
+                  widget: string
+                  summary: Used for display on website. Enter in your preferred format
+
+                - label: Address
+                  name: address
+                  widget: object
+                  collapsed: true
+                  fields:
+                      - label: Address Line One
+                        name: lineOne
+                        widget: string
+
+                      - label: Address Line Two
+                        name: lineTwo
+                        widget: string
+
+                      - label: City
+                        name: city
+                        widget: string
+
+                      - label: State
+                        name: state
+                        widget: string
+
+                      - label: Zip Code
+                        name: zip
+                        widget: string
+
+                      - label: Google Maps Link
+                        name: mapLink
+                        widget: string
+                        summary: Provide a Google Maps share link to guide visitors to your physical locations
+
+                - label: Social Media
+                  name: social
+                  widget: object
+                  collapsed: true
+                  fields:
+                      - label: Facebook
+                        name: facebook
+                        widget: string
+
+                      - label: Twitter
+                        name: twitter
+                        widget: string
+
+                      - label: Instagram
+                        name: instagram
+                        widget: string
+
+                      - label: Youtube
+                        name: youtube
+                        widget: string
+
+    # BLOG CONFIG
+    - label: Blog
+      name: blog
+      folder: src/content/blog
       create: true
       slug: "{{slug}}"
       fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - {
-                label: "URL Slug",
-                name: "url",
-                widget: "string",
-                hint: 'Specify where the page will be written to. If you use "Blog Post", the post will be accessible from "blog/blog-post"',
-            }
-          - { label: "Description", name: "description", widget: "string" }
-          - { label: "Author", name: "author", widget: "string" }
-          - { label: "Date", name: "date", widget: "datetime" }
-          - { label: "Tags", name: "tags", widget: "list", default: ["post"] }
-          - { label: "Featured Image", name: "image", widget: "image" }
-          - { label: "Image Caption", name: "imageAlt", widget: "string" }
-          - { label: "Body", name: "body", widget: "markdown" }
+          - label: Title
+            name: title
+            widget: string
+
+          - label: Description
+            name: description
+            widget: string
+
+          - label: Author
+            name: author
+            widget: string
+
+          - label: Date
+            name: date
+            widget: datetime
+
+          - label: Tags
+            name: tags
+            widget: list
+            default:
+                - post
+
+          - label: Featured Image
+            name: image
+            widget: image
+
+          - label: Image Caption
+            name: imageAlt
+            widget: string
+
+          - label: Body
+            name: body
+            widget: markdown
+
+    # Listings CONFIG
+    - label: Listings
+      name: listings
+      delete: false
+      editor:
+          preview: false
+      files:
+          - label: Listings
+            name: listings
+            file: src/_data/listings.json
+            description: The listings that exists on the /listings page
+            fields:
+                - label: Listings
+                  name: listings
+                  label_singular: Listing
+                  widget: list
+                  fields:
+
+                      - label: Address
+                        name: address
+                        widget: string
+
+                      - label: Status
+                        name: status
+                        widget: string
+                        hint: 'sale, lease, both, sold'
+
+                      - label: Featured Image
+                        name: image
+                        widget: image
+
+                      - label: Square Feet
+                        name: square_feet
+                        widget: number
+                        value_type: "float"
+                        required: false
+
+                      - label: Size
+                        name: lot_acres
+                        widget: number
+                        hint: 'Acres'
+                        value_type: "float"
+                        required: false
+
+                      - label: Sale Price
+                        name: price
+                        widget: number
+                        required: false
+
+                      - label: Lease Rate
+                        name: lease_rate
+                        widget: number
+                        value_type: "float"
+                        required: false
+
+                      - label: Price Per SF
+                        name: price_per
+                        widget: number
+                        value_type: "float"
+                        required: false
+
+                      - label: Traffic Count
+                        name: taffic
+                        widget: number
+                        required: false
+
+                      - label: Cap Rate
+                        name: caprate
+                        widget: number
+                        value_type: "float"
+                        required: false
+
+                      - label: Zoning
+                        name: zoning
+                        widget: string
+                        required: false
+
+                      - label: Parcel ID
+                        name: parcelid
+                        widget: string
+                        required: false
+
+                      - label: City
+                        name: city
+                        widget: string
+
+                      - label: State
+                        name: state
+                        widget: string
+                        hint: 'OK'
+
+                      - label: Zipcode
+                        name: zipcode
+                        widget: string
+
+                      - label: Latitude
+                        name: lat
+                        widget: number
+                        value_type: "float"
+
+                      - label: Longitude
+                        name: lng
+                        widget: number
+                        value_type: "float"
+
+                      - label: Description
+                        name: description
+                        widget: markdown
+
+                      - label: Agent Name
+                        name: agent_name
+                        widget: string
+
+                      - label: Additional Images
+                        name: additional_images
+                        widget: image
+                        required: false
+
+                      - label: Additional Content
+                        name: sections
+                        label_singular: Section
+                        widget: list
+                        required: false
+                        fields:
+                            - label: Section Name
+                              name: section_name
+                              widget: string
+
+                            - label: Section Description
+                              name: section_description
+                              widget: string

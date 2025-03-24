@@ -1,0 +1,205 @@
+---
+title: "Listings"
+description: ""
+permalink: 'listings/'
+eleventyNavigation:
+    key: 'Listings' 
+    order: '200'
+    parent: 'CMS'
+---
+
+{% extends "layouts/base_nofooter.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/assets/css/cms-menu.css">
+
+
+    <!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+  #map {
+    height: 100vh;
+    width: 100%;
+  }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-VeE+12I/a2/bjUUtTq3pyHdfrYrGP7uK+ZjE7rRkzEY="
+  crossorigin=""></script>
+
+<script>
+
+
+  // Initialize map
+  const map = L.map('map').setView([35.2216, -97.4446], 13); // Norman
+
+  // Add OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Marker icon generator
+  function getColoredIcon(color) {
+    return new L.Icon({
+      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+  }
+
+  // Define colors
+  const redIcon = getColoredIcon("red");
+  const purpleIcon = getColoredIcon("violet"); // violet = purple
+  const blackIcon = getColoredIcon("black");
+  const blueIcon = getColoredIcon("blue");
+
+  function addMarker({ lat, lng, color, title, imageUrl, price, squareFeet, lotSize, status, address, agentName, agentUrl, language }) {
+  let icon;
+  if (color === "red") icon = redIcon;
+  else if (color === "purple") icon = purpleIcon;
+  else if (color === "black") icon = blackIcon;
+  else if (color === "blue") icon = blueIcon;
+  else icon = redIcon; // default
+
+  const marker = L.marker([lat, lng], {
+    icon: icon,
+    title: title
+  }).addTo(map);
+
+  const popupHtml = `
+      <div style="position: relative;">
+      
+        <img src="${imageUrl}" alt="${title}" style="width: 100%; height: auto; display: block;">
+        <div style="position: absolute; top: 8px; left: 8px; background-color: black; color: white; padding: 2px 6px; font-size: 12px; border-radius: 3px;">${status}</div>
+      </div>
+      <div style="padding: 10px;">
+        <div style="font-size: 18px; font-weight: bold;">${price}</div>
+        <div style="font-size: 14px; color: #444;">${squareFeet}</div>
+        <div style="font-size: 14px; color: #444;">${lotSize}${language}</div>
+        <div style="margin-top: 5px; font-size: 13px; color: #333;">${address}</div>
+        <div style="margin-top: 8px; font-size: 12px;">
+          <a href="${agentUrl}" target="_blank" style="color: #0074cc; text-decoration: none;">JOHNSON COMMERCIAL GROUP, ${agentName}</a>
+        </div>
+      </div>
+      </div>
+  `;
+
+  marker.bindPopup(popupHtml);
+}
+function addCommasToFloat(number) {
+  return number.toLocaleString('en-US');
+}
+
+function formatToUSDollars(amount) {
+  return amount.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  });
+}
+
+        var rawPrice;
+        var rawSqFt;
+        var formattedPrice;
+        var formattedSqFt;
+        var address;
+        var lotAcres;
+        var listingImage;
+        var agent_name;
+  {% for listing in listings.listings %}
+        rawPrice = {{ listing.price }};
+        rawSqFt = {{ listing.square_feet or 0 }};
+        formattedPrice = formatToUSDollars(rawPrice);
+        formattedSqFt = rawSqFt ? addCommasToFloat(rawSqFt) + " Sqf" : "";
+        address = {% if listing.address %}"{{ listing.address }}"{% else %} "" {% endif %}
+        lotAcres = {% if listing.lot_acres %}"{{ listing.lot_acres }} acres lot - "{% else %} "" {% endif %}
+        listingImage = {% if listing.image %}"{{ listing.image }}"{% else %} "" {% endif %}
+        agent_name = {% if listing.agent_name %}"{{ listing.agent_name }}"{% else %} "" {% endif %}
+
+            {% if listing.status == 'sale' %}
+                addMarker({
+                    status: "Active",
+                    language: "For Sale",
+                    color: "red",
+                    lat: {{listing.lat}},
+                    lng: {{listing.lng}},
+                    title: address,
+                    imageUrl: listingImage,
+                    price: formattedPrice,
+                    squareFeet: formattedSqFt,
+                    lotSize: lotAcres,
+                    address:address,
+                    agentName: agent_name,
+                    agentUrl: "https://example.com/red"
+                });
+            {% endif %}
+            {% if listing.status == 'sold' %}
+                addMarker({
+                    status: "Sold",
+                    language: "Sold",
+                    color: "black",
+                    lat: {{listing.lat}},
+                    lng: {{listing.lng}},
+                    title: address,
+                    imageUrl: listingImage,
+                    price: formattedPrice,
+                    squareFeet: formattedSqFt,
+                    lotSize: lotAcres,
+                    address: address,
+                    agentName: agent_name,
+                    agentUrl: "https://example.com/red"
+                });
+            {% endif %}
+            {% if listing.status == 'lease' %}
+                addMarker({
+                    status: "Active",
+                    language: "For Lease",
+                    color: "purple",
+                    lat: {{listing.lat}},
+                    lng: {{listing.lng}},
+                    title: address,
+                    imageUrl: listingImage,
+                    price: formattedPrice,
+                    squareFeet: formattedSqFt,
+                    lotSize: lotAcres,
+                    address: address,
+                    agentName: agent_name,
+                    agentUrl: "https://example.com/red"
+                });
+            {% endif %}
+            {% if listing.status == 'both' %}
+                addMarker({
+                    status: "Active",
+                    language: "For Sale/Lease",
+                    color: "blue",
+                    lat: {{listing.lat}},
+                    lng: {{listing.lng}},
+                    title: address,
+                    imageUrl: listingImage,
+                    price: formattedPrice,
+                    squareFeet: formattedSqFt,
+                    lotSize: lotAcres,
+                    address: address,
+                    agentName: agent_name,
+                    agentUrl: "https://example.com/red"
+                });
+            {% endif %}
+  {% endfor %}
+
+
+
+</script>
+{% endblock %}
