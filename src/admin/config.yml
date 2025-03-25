@@ -5,7 +5,7 @@ backend:
 local_backend: true
 
 # Change url to a link to the image you want to use, no file paths, must be a URL
-logo_url: "https://codestitch.app/frontend/images/logo.png"
+logo_url: "https://images.squarespace-cdn.com/content/v1/63402aad59ee1e64a2820c16/d642cb81-902a-42a7-87e3-8651e05ee6ef/405.435.3572.png?format=2500w%202500w"
 
 # Where should uploaded files be saved
 media_folder: src/assets/images/cms
