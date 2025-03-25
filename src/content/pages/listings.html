@@ -5,201 +5,284 @@ permalink: 'listings/'
 eleventyNavigation:
     key: 'Listings' 
     order: '200'
-    parent: 'CMS'
 ---
 
 {% extends "layouts/base_nofooter.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/cms-menu.css">
+  <link rel="stylesheet" href="/assets/css/cms-menu.css">
 
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-    <!-- Leaflet CSS -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<style>
-  #map {
-    height: 100vh;
-    width: 100%;
-  }
-</style>
+  <style>
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
-    <div id="map"></div>
+  <div id="map"></div>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-VeE+12I/a2/bjUUtTq3pyHdfrYrGP7uK+ZjE7rRkzEY="
-  crossorigin=""></script>
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-VeE+12I/a2/bjUUtTq3pyHdfrYrGP7uK+ZjE7rRkzEY="
+    crossorigin=""></script>
 
-<script>
+  <script>
+    // Initialize map
+    const map = L.map('map').setView([35.2216, -97.4446], 13); // Norman
 
-
-  // Initialize map
-  const map = L.map('map').setView([35.2216, -97.4446], 13); // Norman
-
-  // Add OpenStreetMap tiles
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
-
-  // Marker icon generator
-  function getColoredIcon(color) {
-    return new L.Icon({
-      iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
+    // Define base layers
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
     });
-  }
 
-  // Define colors
-  const redIcon = getColoredIcon("red");
-  const purpleIcon = getColoredIcon("violet"); // violet = purple
-  const blackIcon = getColoredIcon("black");
-  const blueIcon = getColoredIcon("blue");
+    var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles © Esri'
+    });
 
-  function addMarker({ lat, lng, color, title, imageUrl, price, squareFeet, lotSize, status, address, agentName, agentUrl, language }) {
-  let icon;
-  if (color === "red") icon = redIcon;
-  else if (color === "purple") icon = purpleIcon;
-  else if (color === "black") icon = blackIcon;
-  else if (color === "blue") icon = blueIcon;
-  else icon = redIcon; // default
+    // Add default layer to map
+    osm.addTo(map);
 
-  const marker = L.marker([lat, lng], {
-    icon: icon,
-    title: title
-  }).addTo(map);
+    // Add base layer control in the top left
+    var baseMaps = {
+      "OpenStreetMap": osm,
+      "Satellite": satellite
+    };
+    L.control.layers(baseMaps, null, {position: 'topleft'}).addTo(map);
 
-  const popupHtml = `
-      <div style="position: relative;">
-      
-        <img src="${imageUrl}" alt="${title}" style="width: 100%; height: auto; display: block;">
-        <div style="position: absolute; top: 8px; left: 8px; background-color: black; color: white; padding: 2px 6px; font-size: 12px; border-radius: 3px;">${status}</div>
-      </div>
-      <div style="padding: 10px;">
-        <div style="font-size: 18px; font-weight: bold;">${price}</div>
-        <div style="font-size: 14px; color: #444;">${squareFeet}</div>
-        <div style="font-size: 14px; color: #444;">${lotSize}${language}</div>
-        <div style="margin-top: 5px; font-size: 13px; color: #333;">${address}</div>
-        <div style="margin-top: 8px; font-size: 12px;">
-          <a href="${agentUrl}" target="_blank" style="color: #0074cc; text-decoration: none;">JOHNSON COMMERCIAL GROUP, ${agentName}</a>
+    // Global array to store all markers
+    const allMarkers = [];
+
+    // Filter settings (default: all shown)
+    var filterSettings = {
+      sale: true,
+      lease: true,
+      sold: true
+    };
+
+    // Function to update marker visibility based on filter settings
+    function updateMarkersVisibility() {
+      allMarkers.forEach(function(marker) {
+        // Marker is visible if any of its categories is enabled
+        var visible = marker.categories.some(function(cat) {
+          return filterSettings[cat];
+        });
+        if (visible) {
+          if (!map.hasLayer(marker)) {
+            marker.addTo(map);
+          }
+        } else {
+          if (map.hasLayer(marker)) {
+            marker.remove();
+          }
+        }
+      });
+    }
+
+    // Custom control for filtering markers
+    var FilterControl = L.Control.extend({
+      options: { position: 'topleft' },
+      onAdd: function (map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+        container.style.backgroundColor = 'white';
+        container.style.padding = '10px';
+        container.innerHTML = `
+          <strong>Filter Listings</strong><br>
+          <label><input type="checkbox" id="filter-sale" checked> For Sale</label><br>
+          <label><input type="checkbox" id="filter-lease" checked> For Lease</label><br>
+          <label><input type="checkbox" id="filter-sold" checked> Sold</label>
+        `;
+        L.DomEvent.disableClickPropagation(container);
+
+        container.querySelector("#filter-sale").addEventListener("change", function(e) {
+          filterSettings.sale = e.target.checked;
+          updateMarkersVisibility();
+        });
+        container.querySelector("#filter-lease").addEventListener("change", function(e) {
+          filterSettings.lease = e.target.checked;
+          updateMarkersVisibility();
+        });
+        container.querySelector("#filter-sold").addEventListener("change", function(e) {
+          filterSettings.sold = e.target.checked;
+          updateMarkersVisibility();
+        });
+        return container;
+      }
+    });
+    map.addControl(new FilterControl());
+
+    // Marker icon generator
+    function getColoredIcon(color) {
+      return new L.Icon({
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+    }
+
+    // Define colored icons
+    const redIcon = getColoredIcon("red");
+    const purpleIcon = getColoredIcon("violet"); // violet = purple
+    const blackIcon = getColoredIcon("black");
+    const blueIcon = getColoredIcon("blue");
+
+    // Function to add a marker to the map and store its category for filtering
+    function addMarker({ lat, lng, color, title, imageUrl, price, squareFeet, lotSize, status, address, agentName, agentUrl, language }) {
+      let icon;
+      if (color === "red") icon = redIcon;
+      else if (color === "purple") icon = purpleIcon;
+      else if (color === "black") icon = blackIcon;
+      else if (color === "blue") icon = blueIcon;
+      else icon = redIcon; // default
+
+      const marker = L.marker([lat, lng], {
+        icon: icon,
+        title: title
+      }).addTo(map);
+
+      const popupHtml = `
+        <div style="position: relative;">
+          <img src="${imageUrl}" alt="${title}" style="width: 100%; height: auto; display: block;">
+          <div style="position: absolute; top: 8px; left: 8px; background-color: black; color: white; padding: 2px 6px; font-size: 12px; border-radius: 3px;">${status}</div>
         </div>
-      </div>
-      </div>
-  `;
+        <div style="padding: 10px;">
+          <div style="font-size: 18px; font-weight: bold;">${price}</div>
+          <div style="font-size: 14px; color: #444;">${squareFeet}</div>
+          <div style="font-size: 14px; color: #444;">${lotSize}${language}</div>
+          <div style="margin-top: 5px; font-size: 13px; color: #333;">${address}</div>
+          <div style="margin-top: 8px; font-size: 12px;">
+            <a href="${agentUrl}" target="_blank" style="color: #0074cc; text-decoration: none;">JOHNSON COMMERCIAL GROUP, ${agentName}</a>
+          </div>
+        </div>
+      `;
+      marker.bindPopup(popupHtml);
 
-  marker.bindPopup(popupHtml);
-}
-function addCommasToFloat(number) {
-  return number.toLocaleString('en-US');
-}
+      // Assign marker categories based on the "language" value
+      if (language === "For Sale") {
+        marker.categories = ["sale"];
+      } else if (language === "For Lease") {
+        marker.categories = ["lease"];
+      } else if (language === "Sold") {
+        marker.categories = ["sold"];
+      } else if (language === "For Sale/Lease") {
+        marker.categories = ["sale", "lease"];
+      } else {
+        marker.categories = [];
+      }
+      allMarkers.push(marker);
+    }
 
-function formatToUSDollars(amount) {
-  return amount.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
-}
+    function addCommasToFloat(number) {
+      return number.toLocaleString('en-US');
+    }
 
-        var rawPrice;
-        var rawSqFt;
-        var formattedPrice;
-        var formattedSqFt;
-        var address;
-        var lotAcres;
-        var listingImage;
-        var agent_name;
-  {% for listing in listings.listings %}
-        rawPrice = {{ listing.price }};
-        rawSqFt = {{ listing.square_feet or 0 }};
-        formattedPrice = formatToUSDollars(rawPrice);
-        formattedSqFt = rawSqFt ? addCommasToFloat(rawSqFt) + " Sqf" : "";
-        address = {% if listing.address %}"{{ listing.address }}"{% else %} "" {% endif %}
-        lotAcres = {% if listing.lot_acres %}"{{ listing.lot_acres }} acres lot - "{% else %} "" {% endif %}
-        listingImage = {% if listing.image %}"{{ listing.image }}"{% else %} "" {% endif %}
-        agent_name = {% if listing.agent_name %}"{{ listing.agent_name }}"{% else %} "" {% endif %}
+    function formatToUSDollars(amount) {
+      return amount.toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+    }
 
-            {% if listing.status == 'sale' %}
-                addMarker({
-                    status: "Active",
-                    language: "For Sale",
-                    color: "red",
-                    lat: {{listing.lat}},
-                    lng: {{listing.lng}},
-                    title: address,
-                    imageUrl: listingImage,
-                    price: formattedPrice,
-                    squareFeet: formattedSqFt,
-                    lotSize: lotAcres,
-                    address:address,
-                    agentName: agent_name,
-                    agentUrl: "https://example.com/red"
-                });
-            {% endif %}
-            {% if listing.status == 'sold' %}
-                addMarker({
-                    status: "Sold",
-                    language: "Sold",
-                    color: "black",
-                    lat: {{listing.lat}},
-                    lng: {{listing.lng}},
-                    title: address,
-                    imageUrl: listingImage,
-                    price: formattedPrice,
-                    squareFeet: formattedSqFt,
-                    lotSize: lotAcres,
-                    address: address,
-                    agentName: agent_name,
-                    agentUrl: "https://example.com/red"
-                });
-            {% endif %}
-            {% if listing.status == 'lease' %}
-                addMarker({
-                    status: "Active",
-                    language: "For Lease",
-                    color: "purple",
-                    lat: {{listing.lat}},
-                    lng: {{listing.lng}},
-                    title: address,
-                    imageUrl: listingImage,
-                    price: formattedPrice,
-                    squareFeet: formattedSqFt,
-                    lotSize: lotAcres,
-                    address: address,
-                    agentName: agent_name,
-                    agentUrl: "https://example.com/red"
-                });
-            {% endif %}
-            {% if listing.status == 'both' %}
-                addMarker({
-                    status: "Active",
-                    language: "For Sale/Lease",
-                    color: "blue",
-                    lat: {{listing.lat}},
-                    lng: {{listing.lng}},
-                    title: address,
-                    imageUrl: listingImage,
-                    price: formattedPrice,
-                    squareFeet: formattedSqFt,
-                    lotSize: lotAcres,
-                    address: address,
-                    agentName: agent_name,
-                    agentUrl: "https://example.com/red"
-                });
-            {% endif %}
-  {% endfor %}
+    {% for listing in listings.listings %}
+      {% set type = listing.listing_type %}
+      {% if (type == 'lease' or type == 'both') and not listing.price.sale_price and listing.price.lease_rate %}
+        var rawPrice = "{{ listing.price.lease_rate }}";
+        var formattedPrice = rawPrice;
+      {% else %}
+        var rawPrice = {{ listing.price.sale_price or 0 }};
+        var formattedPrice = formatToUSDollars(rawPrice);
+      {% endif %}
 
+      var address = "{{ listing.address | default('', true) }}";
+      var listingImage = "{{ listing.image | default('', true) }}";
+      var agent_name = "{{ listing.agent_name | default('', true) }}";
+      {% set lotAcres_formatted = listing.buildings[0].lot_acres or 0 %}
+      var lotAcres = {% if listing.buildings and listing.buildings[0].lot_acres %}addCommasToFloat({{ lotAcres_formatted }}) + " acres - "{% else %}""{% endif %};
 
+      var formattedSqFt = "";
+      {% if listing.buildings and listing.buildings.length > 0 %}
+        {% set sqftA = listing.buildings[0].square_feet or 0 %}
+        {% set sqftB = listing.buildings[1].square_feet or 0 %}
+        {% if listing.buildings.length == 1 %}
+          formattedSqFt = addCommasToFloat({{ sqftA }}) + " Sqf";
+        {% elif listing.buildings.length == 2 %}
+          formattedSqFt = "A: " + addCommasToFloat({{ sqftA }}) + " Sqf / B: " + addCommasToFloat({{ sqftB }}) + " Sqf";
+        {% elif listing.buildings.length > 2 %}
+          formattedSqFt = "A: " + addCommasToFloat({{ sqftA }}) + " Sqf / B: " + addCommasToFloat({{ sqftB }}) + " Sqf . . .";
+        {% endif %}
+      {% endif %}
 
-</script>
+      {% if type in ['sale', 'sold', 'lease', 'both'] %}
+        {% set marker = {
+          "sale": { "status": "Active", "language": "For Sale", "color": "red" },
+          "sold": { "status": "Sold", "language": "Sold", "color": "black" },
+          "lease": { "status": "Active", "language": "For Lease", "color": "blue" },
+          "both": { "status": "Active", "language": "For Sale/Lease", "color": "purple" }
+        }[type] %}
+
+        addMarker({
+          status: "{{ marker.status }}",
+          language: "{{ marker.language }}",
+          color: "{{ marker.color }}",
+          lat: {{ listing.location.lat or 0 }},
+          lng: {{ listing.location.lng or 0 }},
+          title: address,
+          imageUrl: listingImage,
+          price: formattedPrice,
+          squareFeet: formattedSqFt,
+          lotSize: lotAcres,
+          address: address,
+          agentName: agent_name,
+          agentUrl: "https://example.com/red"
+        });
+      {% endif %}
+    {% endfor %}
+  </script>
+
+    <script>
+      window.onload = function () {
+        const nav = document.getElementById("cs-navigation");
+        const map = document.getElementById("map");
+        
+        if (nav && map) {
+          const navHeight = nav.offsetHeight;
+          map.style.height = (window.innerHeight - navHeight) + "px";
+          map.style.marginTop = navHeight + "px";
+        }
+      };
+    </script>
+    <script>
+      function adjustMapSize() {
+        const nav = document.getElementById("cs-navigation");
+        const map = document.getElementById("map");
+    
+        if (nav && map) {
+          const navHeight = nav.offsetHeight;
+          map.style.height = (window.innerHeight - navHeight) + "px";
+          map.style.marginTop = navHeight + "px";
+        }
+      }
+    
+      window.onload = adjustMapSize;
+    
+      // Debounce for resize
+      let resizeTimeout;
+      window.onresize = function () {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(adjustMapSize, 50); // wait 150ms after resize ends
+      };
+    </script>
+    
 {% endblock %}

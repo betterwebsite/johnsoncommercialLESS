@@ -1,67 +1,119 @@
 {
   "listings": [
     {
-      "parcelid": "",
-      "lng": -97.4909271,
       "agent_name": "Chris Johnson",
-      "lease_rate": "",
-      "price_per": 121.95,
-      "taffic": 35568,
-      "price": 1250000,
-      "zoning": "I-1",
-      "city": "Norman",
-      "zipcode": "73072",
-      "sections": [
-        {
-          "section_name": "Year Built",
-          "section_description": "1982/2018"
-        }
-      ],
-      "lot_acres": "",
-      "square_feet": 10250,
-      "state": "OK",
-      "status": "sale",
+      "price": {
+        "sale_price": 1250000,
+        "price_per": 121.95
+      },
+      "misc": {
+        "caprate": 7.5,
+        "zoning": "I-1"
+      },
       "address": "2845 Broce Drive, Norman, OK 73072",
+      "listing_type": "sale",
+      "location": {
+        "state": "OK",
+        "city": "Norman",
+        "zipcode": "73072",
+        "lat": 35.252234,
+        "lng": -97.489476
+      },
       "image": "/assets/images/cms/2845-broce-dr-norman-ok-6.jpg",
       "description": "***For Sale: Warehouse Space in Norman***\n\n**Located at 2845 Broce Drive, this fully leased investment property presents a compelling opportunity. Renovated in 2018, it includes two buildings totaling 10,250 SF. Building 1 includes 2 units totaling 6,250 sqft with 13 offices, 3 bathrooms, a commercial kitchen, conference room, and warehouse space. Building 2 features 2 units totaling 4,000 sqft, including 11 offices, 3 bathrooms, a commercial kitchen, a large open entryway, and warehouse. With four units currently leased, this property offers a promising investment opportunity with potential for strong returns.**",
-      "lat": 35.2509872
+      "buildings": [
+        {
+          "square_feet": 6250,
+          "lot_acres": 10250,
+          "year_built": 1982
+        },
+        {
+          "square_feet": 4000,
+          "lot_acres": 10250,
+          "year_built": 2018
+        }
+      ]
     },
     {
-      "parcelid": "",
-      "lng": -97.46799697959183,
       "agent_name": "Chris Johnson",
-      "lease_rate": "",
-      "price_per": 292.77,
-      "taffic": "",
-      "price": 2108000,
-      "zoning": "C2",
-      "city": "Norman",
-      "zipcode": "73069",
-      "lot_acres": 0.87,
-      "square_feet": 7200,
-      "state": "OK",
-      "caprate": 7,
-      "status": "sale",
-      "address": "1808 W Lindsey Street, Norman, OK 73069",
-      "image": "/assets/images/cms/1808-w-lindsay-st-norman-oklahoma-2.jpg",
-      "description": "***For Sale: Retail Space In Norman!***\n\n**This fully leased 7,200 SF retail center at 1808 W Lindsey St, Norman, OK is located at the SW corner of Lindsey St. and McGee St., just 1.5 miles from the University of Oklahoma. The property sits on 0.87 acres and is zoned C-2. Built in 2007, it features four units with NNN leases, 170 feet of frontage along Lindsey St., and 40 parking spaces. Situated in a high-traffic retail area with easy access to I-35, this property offers strong visibility and consistent foot traffic, making it a solid investment opportunity.**",
-      "lat": 35.20382532653061
-    },
-    {
-      "lng": -97.4892102,
-      "agent_name": "Chris Johnson",
-      "price_per": 12,
-      "price": 27000,
-      "zoning": "I-1",
-      "city": "Norman",
-      "zipcode": "73072",
-      "square_feet": 2250,
-      "state": "OK",
-      "status": "lease",
+      "price": {
+        "lease_rate": "$150/Sf/Mo"
+      },
+      "misc": {
+        "zoning": "C-1"
+      },
       "address": "3221 Bart Conner Dr, STE H, Norman OK, 73072 ",
+      "listing_type": "lease",
+      "location": {
+        "state": "OK",
+        "city": "Norman",
+        "zipcode": "73072",
+        "lat": 35.250968,
+        "lng": -97.490289
+      },
       "image": "/assets/images/cms/3221-bart-conner-suite-h-norman-oklahoma-13.jpg",
       "description": "***For Lease: IndustSpace In Norman!***\n\n**2,250 SF industrial unit in NW Norman, offering a versatile layout with 1,150 SF +/- of warehouse space featuring a 10’x12’ overhead door, unit heater, and 15’ clear height, along with 1,100 +/- SF of office space equipped with central HVAC. The unit includes one restroom and provides ample parking, making it an excellent option for businesses seeking a well-located, functional space with easy access and flexibility.**",
-      "lat": 35.2505709
+      "buildings": [
+        {
+          "square_feet": 2250,
+          "year_built": 1983
+        }
+      ]
+    },
+    {
+      "agent_name": "Chris Johnson",
+      "price": {
+        "sale_price": 2108000,
+        "price_per": 290
+      },
+      "misc": {
+        "zoning": "C2",
+        "caprate": 7
+      },
+      "address": "1808 W Lindsey Street, Norman, OK 73069",
+      "listing_type": "sale",
+      "location": {
+        "state": "OK",
+        "city": "Norman",
+        "zipcode": "73069",
+        "lat": 35.203226,
+        "lng": -97.470405
+      },
+      "image": "/assets/images/cms/1808-w-lindsay-st-norman-oklahoma-2.jpg",
+      "description": "***For Sale: Retail Space In Norman!***\n\n**This fully leased 7,200 SF retail center at 1808 W Lindsey St, Norman, OK is located at the SW corner of Lindsey St. and McGee St., just 1.5 miles from the University of Oklahoma. The property sits on 0.87 acres and is zoned C-2. Built in 2007, it features four units with NNN leases, 170 feet of frontage along Lindsey St., and 40 parking spaces. Situated in a high-traffic retail area with easy access to I-35, this property offers strong visibility and consistent foot traffic, making it a solid investment opportunity.**",
+      "buildings": [
+        {
+          "square_feet": 7200,
+          "lot_acres": 0.87
+        }
+      ]
+    },
+    {
+      "agent_name": "Chris Johnson",
+      "price": {
+        "sale_price": 499000,
+        "price_per": 1.86
+      },
+      "misc": {
+        "zoning": "C-0"
+      },
+      "address": "3000 12th Ave NE, Norman OK, 73071",
+      "listing_type": "sold",
+      "location": {
+        "state": "OK",
+        "city": "Norman",
+        "zipcode": "73071",
+        "lat": 35.255654,
+        "lng": -97.424335
+      },
+      "image": "/assets/images/cms/image.jpg",
+      "description": "***For Sale: Land In Norman!***\n\n**Prime Commercial Land: 6.164 acres MOL with CO zoning (Suburban Office) at 3000 12th Ave NE, Norman, OK 73010. With 837' of frontage on 12th Ave NE, this easily accessible property offers natural water detention, along with adjacent water and sewer connections. Conveniently located just 4 miles from the University of Oklahoma and offering effortless access to I-35, this is an exceptional opportunity for various commercial ventures. Don't miss out on this prime location to realize your business's full potential. Act now and seize this rare gem! Listed at $499,000.00. Call today for more information.**",
+      "buildings": [
+        {
+          "lot_acres": 6.164,
+          "year_built": ""
+        }
+      ]
     }
   ]
 }

@@ -23,19 +23,6 @@ function ariaExpanded() {
     }
 }
 
-// This script adds a class to the body after scrolling 100px
-// and we used these body.scroll styles to create some on scroll 
-// animations with the navbar
-
-document.addEventListener('scroll', (e) => { 
-    const scroll = document.documentElement.scrollTop;
-    if(scroll >= 100){
-document.querySelector('body').classList.add('scroll')
-    } else {
-    document.querySelector('body').classList.remove('scroll')
-    }
-});
-
 // mobile nav toggle code
 const dropDowns = Array.from(document.querySelectorAll('#cs-navigation .cs-dropdown'));
     for (const item of dropDowns) {
@@ -44,4 +31,58 @@ const dropDowns = Array.from(document.querySelectorAll('#cs-navigation .cs-dropd
     }
     item.addEventListener('click', onClick)
     }
+
+// after scrolling down 100px, add .scroll class to the #cs-navigation
+document.addEventListener('scroll', (e) => { 
+    const scroll = document.documentElement.scrollTop;
+    if(scroll >= 100){
+document.querySelector('#cs-navigation').classList.add('scroll')
+    } else {
+    document.querySelector('#cs-navigation').classList.remove('scroll')
+    }
+});
                             
+
+
+    class GalleryFilter {
+        filtersSelector = ".cs-button";
+        imagesSelector = ".cs-listing";
+        activeClass = "cs-active";
+        hiddenClass = "cs-hidden";
+
+        constructor() {
+            const $filters = document.querySelectorAll(this.filtersSelector);
+            this.$activeFilter = $filters[0];
+            this.$images = document.querySelectorAll(this.imagesSelector);
+
+            this.$activeFilter.classList.add(this.activeClass);
+
+            for (const $filter of $filters) {
+                $filter.addEventListener("click", () => this.onClick($filter));
+            }
+        }
+
+        onClick($filter) {
+            this.filter($filter.dataset.filter);
+
+            const { activeClass } = this;
+
+            this.$activeFilter.classList.remove(activeClass);
+            $filter.classList.add(activeClass);
+
+            this.$activeFilter = $filter;
+        }
+
+        filter(filter) {
+            const showAll = filter == "all";
+            const { hiddenClass } = this;
+
+            for (const $image of this.$images) {
+                const show = showAll || $image.dataset.category == filter;
+                $image.classList.toggle(hiddenClass, !show);
+            }
+        }
+    }
+
+    new GalleryFilter();
+                                
