@@ -114,6 +114,31 @@
           "year_built": ""
         }
       ]
+    },
+    {
+      "agent_name": "Chris Johnson",
+      "price": {
+        "sale_price": 185000
+      },
+      "misc": {
+        "zoning": "I-1"
+      },
+      "address": "0000n Industrial Dr",
+      "listing_type": "sale",
+      "location": {
+        "state": "OK",
+        "city": "Shawnee",
+        "lat": 35.374884,
+        "lng": -96.995857,
+        "zipcode": "73070"
+      },
+      "image": "/assets/images/cms/closed-post-37316-old-highway-270-shawnee-ok-74804.png",
+      "description": "Test",
+      "buildings": [
+        {
+          "square_feet": 1250
+        }
+      ]
     }
   ]
 }
