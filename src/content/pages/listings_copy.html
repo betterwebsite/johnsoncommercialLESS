@@ -1,9 +1,9 @@
 ---
 title: "Listings"
 description: ""
-permalink: 'listings/'
+permalink: 'listings_copy/'
 eleventyNavigation:
-    key: 'Listings' 
+    key: 'Listings Copy' 
     order: '200'
 ---
 
@@ -22,7 +22,7 @@ eleventyNavigation:
     #container {
       display: flex;
       height: 100vh;
-      /*margin-top: var(--nav-height, 0); /* in case you're dynamically adjusting */
+      margin-top: var(--nav-height, 0); /* in case you're dynamically adjusting */
     }
   
     #listing-view {
@@ -50,19 +50,13 @@ eleventyNavigation:
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       display: flex;
       flex-direction: column;
-      overflow: visible;
+      overflow: hidden;
       /* Remove height: 100% or add a max-height */
-      /*max-height: 500px; /* Or whatever looks good on mobile */
+      max-height: 500px; /* Or whatever looks good on mobile */
       transition: box-shadow 0.2s ease, transform 0.1s ease;
       cursor: pointer;
-      max-height: 19em;
     }
-    @media (max-width: 1200px) {
-    .listing-card {
-      margin-bottom: 1rem;
-    }
-  }
-    
+
     .listing-card:hover {
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       transform: translateY(-2px);
@@ -75,8 +69,6 @@ eleventyNavigation:
       object-fit: cover;
       border-bottom: 1px solid #eee;
       position: relative;
-      border-top-left-radius: 6px;
-      border-top-right-radius: 6px;
     }
 
     .listing-info {
@@ -297,177 +289,18 @@ eleventyNavigation:
 .dropdown-menu li:hover {
   background-color: #f0f0f0;
 }
-#filter-bar-inline {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 16px 24px;
-  background: white;
-  border-bottom: 1px solid #ddd;
-  width: 100%;
-  z-index: 15;
-  position: relative;
-  /*margin-top: 110px; /* <- adjust this to match your header height */
-}
-
-
-#filter-bar-inline input[type="text"],
-#filter-bar-inline select {
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  /* width: 180px; */
-  width: fit-content;
-}
-
-.filter-group {
-  position: relative;
-}
-
-.multi-select {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  background-color: #fff;
-  cursor: pointer;
-  width: 180px;
-}
-
-.multi-options {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  background: #fff;
-  border: 1px solid #ccc;
-  width: 180px;
-  max-height: 200px;
-  overflow-y: auto;
-  display: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.filter-group:hover .multi-options {
-  display: block;
-  z-index: 15;
-}
-
-.multi-options label {
-  display: block;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-
-.btn {
-  background-color: #002c54;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  padding: 8px 16px;
-  cursor: pointer;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-
-.hover-details {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: white;
-  color: #333;
-  padding: 12px;
-  font-size: 13px;
-  line-height: 1.4;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease;
-  border-bottom-left-radius: 6px;
-  border-bottom-right-radius: 6px;
-  z-index: 5;
-}
-
-.listing-card {
-  position: relative;
-  transition: all 0.3s ease;
-}
-
-.listing-card:hover {
-  background: white;
-}
-
-.listing-card:hover .hover-details {
-  opacity: 1;
-  visibility: visible;
-}
 
   </style>
   
 {% endblock %}
 
 {% block body %}
-<div id="filter-bar-inline">
-  <input type="text" id="search-input" placeholder="Search by address, city, state, or zip">
-
-
-  <div class="filter-group">
-    <div tabindex="0" class="multi-select">Property Types ▼</div>
-    <div class="multi-options">
-      <label><input type="checkbox" value="all" checked> Select All</label>
-      <label><input type="checkbox" value="industrial"> Industrial</label>
-      <label><input type="checkbox" value="land"> Land</label>
-      <label><input type="checkbox" value="medical"> Medical</label>
-      <label><input type="checkbox" value="office"> Office</label>
-      <label><input type="checkbox" value="retail"> Retail</label>
-      <label><input type="checkbox" value="special purpose"> Special Purpose</label>
-      <label><input type="checkbox" value="residential"> Residential</label>
-    </div>
-  </div>
-  
-
-  <select id="listing-type-filter">
-    <option value="all">Sale, Lease & Sold</option>
-    <option value="sale">Sale</option>
-    <option value="lease">Lease</option>
-    <option value="both">Sale/Lease</option>
-    <option value="sold">Sold</option>
-  </select>
-  
-
-  <input type="text" id="min-sf" placeholder="Min SF">
-  <input type="text" id="max-sf" placeholder="Max SF">
-
-
-  <!-- <button class="btn">More Filters</button>
-  <button class="btn btn-secondary">Reset Filters</button> -->
-</div>
 <div id="container" class="layout show-list">
-  
+
 
   <div id="listing-view">
     {% for listing in listings.listings %}
-    {% set total_sf = 0 %}
-    {% for b in listing.buildings %}
-      {% set total_sf = total_sf + (b.square_feet or 0) %}
-    {% endfor %}
-
-    <div class="listing-card"
-     data-lat="{{ listing.location.lat }}"
-     data-lng="{{ listing.location.lng }}"
-     data-type="{{ listing.listing_type }}"
-     data-sf="{{ total_sf }}"
-     data-property="{{ listing.property_type | lower }}"
-     onclick="window.location.href='https://localhost:8080/{{ listing.address | urlencode }}'">
-
-
-
+    <div class="listing-card" onclick="window.location.href='https://localhost:8080/{{ listing.address | urlencode }}'">
       <div class="image-wrapper">
         <img src="{{ listing.image }}" alt="{{ listing.address }}">
         <div class="status-badge {{ listing.listing_type }}">
@@ -483,13 +316,6 @@ eleventyNavigation:
             {{ listing.price.lease_rate }}
           {% endif %}
         </div>
-      </div>
-          <!-- NEW HOVER DETAILS -->
-      <div class="hover-details">
-        <div><strong>Address:</strong> {{ listing.address }}</div>
-        <div><strong>Square Feet:</strong> {{ listing.buildings[0].square_feet or "N/A" }}</div>
-        <div><strong>Lot Acres:</strong> {{ listing.buildings[0].lot_acres or "N/A" }}</div>
-        <div><strong>Year Built:</strong> {{ listing.buildings[0].year_built or "N/A" }}</div>
       </div>
     </div>
     
@@ -590,7 +416,7 @@ eleventyNavigation:
         return container;
       }
     });
-    // map.addControl(new FilterControl());
+    map.addControl(new FilterControl());
 
     // Marker icon generator
     function getColoredIcon(color) {
@@ -740,40 +566,18 @@ eleventyNavigation:
     <script>
       function adjustMapSize() {
         const nav = document.getElementById("cs-navigation");
-        const container = document.getElementById("container");
         const map = document.getElementById("map");
-        const map_container = document.getElementById("map-container");
         const listing = document.getElementById("listing-view");
-        const filter = document.getElementById("filter-bar-inline");
     
-        if (nav && container) {
-          const navHeight = nav.offsetHeight;
-          const filterHeight = filter.offsetHeight;
-          container.style.height = (window.innerHeight -navHeight - filterHeight) + "px";
-          // map.style.marginTop = navHeight + "px";
-        }
-        if (nav && map_container) {
-          const navHeight = nav.offsetHeight;
-          const filterHeight = filter.offsetHeight;
-          map_container.style.height = (window.innerHeight -navHeight - filterHeight) + "px";
-          // map.style.marginTop = navHeight + "px";
-        }
         if (nav && map) {
           const navHeight = nav.offsetHeight;
-          const filterHeight = filter.offsetHeight;
-          map.style.height = (window.innerHeight -navHeight - filterHeight) + "px";
-          // map.style.marginTop = navHeight + "px";
+          map.style.height = (window.innerHeight - navHeight) + "px";
+          map.style.marginTop = navHeight + "px";
         }
         if (nav && listing) {
           const navHeight = nav.offsetHeight;
-          const filterHeight = filter.offsetHeight;
-          listing.style.height = (window.innerHeight -navHeight - filterHeight) + "px";
-          // listing.style.marginTop = navHeight + "px";
-        }
-        if (nav && filter) {
-          const navHeight = nav.offsetHeight;
-          // filter.style.height = (window.innerHeight - navHeight) + "px";
-          filter.style.marginTop = navHeight + "px";
+          listing.style.height = (window.innerHeight - navHeight) + "px";
+          listing.style.marginTop = navHeight + "px";
         }
       }
     
@@ -855,204 +659,5 @@ eleventyNavigation:
   });
 
 </script>
-
-
-<!-- filtering -->
-
-<!-- address filter -->
-<script>
-  const searchInput = document.getElementById("search-input");
-  const listingCards = document.querySelectorAll(".listing-card");
-
-  function normalize(str) {
-    return str.toLowerCase().replace(/\s+/g, '');
-  }
-
-  searchInput.addEventListener("input", function () {
-    const query = normalize(this.value);
-    const cards = document.querySelectorAll(".listing-card");
-    
-    allMarkers.forEach(marker => marker.remove()); // Clear all
-    let visibleMarkers = 0;
-
-    cards.forEach(card => {
-      const address = normalize(card.querySelector(".listing-title").textContent);
-      const fullText = card.querySelector(".listing-title").textContent;
-      
-      if (address.includes(query)) {
-        card.style.display = "flex";
-
-        // Highlight the matching part
-        const regex = new RegExp(`(${this.value})`, 'ig');
-        const highlighted = fullText.replace(regex, `<span style="color:black;">$1</span>`);
-        card.querySelector(".listing-title").innerHTML = highlighted;
-
-        // Add marker back
-        const lat = parseFloat(card.dataset.lat);
-        const lng = parseFloat(card.dataset.lng);
-        const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-        if (marker) {
-          marker.addTo(map);
-          visibleMarkers++;
-        }
-      } else {
-        card.style.display = "none";
-      }
-    });
-
-    if (visibleMarkers > 0) {
-      const bounds = L.latLngBounds(
-        Array.from(allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng()))
-      );
-      map.fitBounds(bounds, { padding: [50, 50] });
-    }
-  });
-</script>
-
-
-<!-- listing type filter -->
-<script>
-  const listingTypeSelect = document.getElementById("listing-type-filter");
-
-  listingTypeSelect.addEventListener("change", function () {
-    const selected = this.value;
-
-    document.querySelectorAll(".listing-card").forEach(card => {
-      const type = card.dataset.type;
-
-      const matches = (selected === "all") || (type === selected);
-      card.style.display = matches ? "flex" : "none";
-
-      // Find the marker
-      const lat = parseFloat(card.dataset.lat);
-      const lng = parseFloat(card.dataset.lng);
-      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-
-      if (marker) {
-        if (matches) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
-      }
-    });
-
-    // Fit map to visible markers
-    const visibleMarkers = allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng());
-    if (visibleMarkers.length) {
-      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
-    }
-  });
-</script>
-
-
-<!-- min max sf filter -->
-<script>
-  const minSFInput = document.getElementById("min-sf");
-  const maxSFInput = document.getElementById("max-sf");
-
-  function filterBySF() {
-    const minSF = parseInt(minSFInput.value) || 0;
-    const maxSF = parseInt(maxSFInput.value) || Infinity;
-
-    document.querySelectorAll(".listing-card").forEach(card => {
-      const sf = parseInt(card.dataset.sf) || 0;
-
-      const matches = sf >= minSF && sf <= maxSF;
-      card.style.display = matches ? "flex" : "none";
-
-      const lat = parseFloat(card.dataset.lat);
-      const lng = parseFloat(card.dataset.lng);
-      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-
-      if (marker) {
-        if (matches) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
-      }
-    });
-
-    const visibleMarkers = allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng());
-    if (visibleMarkers.length) {
-      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
-    }
-  }
-
-  minSFInput.addEventListener("input", filterBySF);
-  maxSFInput.addEventListener("input", filterBySF);
-</script>
-
-<!-- property type filter -->
-<script>
-  const propertyCheckboxes = document.querySelectorAll('.multi-options input[type="checkbox"]');
-  let activePropertyTypes = new Set();
-
-  // Initialize with all selected (including "all")
-  propertyCheckboxes.forEach(cb => {
-    if (cb.value !== 'all') activePropertyTypes.add(cb.value);
-  });
-
-  function filterByPropertyType() {
-    const selected = [...activePropertyTypes];
-
-    document.querySelectorAll(".listing-card").forEach(card => {
-      const propType = (card.dataset.property || "").toLowerCase();
-      const matches = selected.includes(propType);
-      card.style.display = matches ? "flex" : "none";
-
-      const lat = parseFloat(card.dataset.lat);
-      const lng = parseFloat(card.dataset.lng);
-      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-      if (marker) {
-        if (matches) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
-      }
-    });
-
-    const visibleMarkers = allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng());
-    if (visibleMarkers.length) {
-      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
-    }
-  }
-
-  propertyCheckboxes.forEach(cb => {
-    cb.addEventListener("change", () => {
-      if (cb.value === 'all') {
-        // Toggle all checkboxes
-        const isChecked = cb.checked;
-        propertyCheckboxes.forEach(other => {
-          if (other.value !== 'all') {
-            other.checked = isChecked;
-            if (isChecked) {
-              activePropertyTypes.add(other.value);
-            } else {
-              activePropertyTypes.delete(other.value);
-            }
-          }
-        });
-      } else {
-        // Individual checkbox toggled
-        if (cb.checked) {
-          activePropertyTypes.add(cb.value);
-        } else {
-          activePropertyTypes.delete(cb.value);
-        }
-
-        // Update "Select All" state
-        const allOther = [...propertyCheckboxes].filter(i => i.value !== 'all');
-        const allChecked = allOther.every(i => i.checked);
-        document.querySelector('input[value="all"]').checked = allChecked;
-      }
-
-      filterByPropertyType();
-    });
-  });
-</script>
-
     
 {% endblock %}

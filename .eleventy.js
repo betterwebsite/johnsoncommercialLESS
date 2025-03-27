@@ -42,6 +42,8 @@ module.exports = function (eleventyConfig) {
         outputDir: "public/assets/images",
     });
 
+    
+
 
     /**=====================================================================
                   PLUGINS - Adds additional eleventy functionality 

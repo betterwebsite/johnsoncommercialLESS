@@ -166,6 +166,12 @@ collections:
                         options: ["sale", "lease", "both", "sold"]
                         default: "sale"
 
+                      - label: Property Type
+                        name: property_type
+                        widget: select
+                        options: ["Industrial", "Land", "Medical", "Office", "Retail", "Special Purpose", "Residential"]
+                        default: "Industrial"
+
                       - label: Featured Image
                         name: image
                         widget: image

@@ -1,6 +1,7 @@
 {
   "listings": [
     {
+      "property_type": "Industrial",
       "agent_name": "Chris Johnson",
       "price": {
         "sale_price": 1250000,
@@ -35,6 +36,7 @@
       ]
     },
     {
+      "property_type": "Industrial",
       "agent_name": "Chris Johnson",
       "price": {
         "lease_rate": "$150/Sf/Mo"
@@ -61,6 +63,7 @@
       ]
     },
     {
+      "property_type": "Retail",
       "agent_name": "Chris Johnson",
       "price": {
         "sale_price": 2108000,
@@ -89,6 +92,7 @@
       ]
     },
     {
+      "property_type": "Land",
       "agent_name": "Chris Johnson",
       "price": {
         "sale_price": 499000,
@@ -116,6 +120,7 @@
       ]
     },
     {
+      "property_type": "Special Purpose",
       "agent_name": "Chris Johnson",
       "price": {
         "sale_price": 185000
