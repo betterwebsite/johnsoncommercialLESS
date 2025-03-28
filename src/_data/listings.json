@@ -11,6 +11,25 @@
         "caprate": 7.5,
         "zoning": "I-1"
       },
+      "sections": [
+        {
+          "section_name": "additional 1",
+          "section_description": "description for additional 1"
+        },
+        {
+          "section_description": "description for additional 2",
+          "section_name": "additional 2"
+        }
+      ],
+      "additional_images": [
+        "https://ucarecdn.com/3e18d467-b97f-421f-a12b-fb37998cae4f/",
+        "https://ucarecdn.com/c3e36275-0fa0-4dcc-89ca-085a9ccfee8f/",
+        "https://ucarecdn.com/efcf3be1-33cb-4937-8af1-bee684b8857d/",
+        "https://ucarecdn.com/e66feb1e-d99b-4c08-ab5e-0d141688c7f9/",
+        "https://ucarecdn.com/562912e8-cb47-4637-bee5-5e0c6d9f453d/",
+        "https://ucarecdn.com/fff3c4b2-d041-4a46-ae83-3e3dff1223bb/",
+        "https://ucarecdn.com/4c80f156-8f32-41e5-9f88-c1e76d729ba2/"
+      ],
       "address": "2845 Broce Drive, Norman, OK 73072",
       "listing_type": "sale",
       "location": {
@@ -20,7 +39,7 @@
         "lat": 35.252234,
         "lng": -97.489476
       },
-      "image": "/assets/images/cms/2845-broce-dr-norman-ok-6.jpg",
+      "image": "https://ucarecdn.com/8315279d-7a07-4350-8d28-3b8fde14ce78/",
       "description": "***For Sale: Warehouse Space in Norman***\n\n**Located at 2845 Broce Drive, this fully leased investment property presents a compelling opportunity. Renovated in 2018, it includes two buildings totaling 10,250 SF. Building 1 includes 2 units totaling 6,250 sqft with 13 offices, 3 bathrooms, a commercial kitchen, conference room, and warehouse space. Building 2 features 2 units totaling 4,000 sqft, including 11 offices, 3 bathrooms, a commercial kitchen, a large open entryway, and warehouse. With four units currently leased, this property offers a promising investment opportunity with potential for strong returns.**",
       "buildings": [
         {

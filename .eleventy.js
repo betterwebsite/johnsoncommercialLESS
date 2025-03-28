@@ -105,6 +105,29 @@ module.exports = function (eleventyConfig) {
      *  https://moment.github.io/luxon/api-docs/index.html#datetime
      */
     eleventyConfig.addFilter("postDate", filterPostDate);
+
+    eleventyConfig.addFilter("slug", function(value) {
+        return String(value)
+          .toLowerCase()
+          .replace(/[^\w\\s-]/g, '')  // remove punctuation
+          .replace(/\\s+/g, '-')      // spaces to dashes
+          .replace(/-+/g, '-')        // collapse multiple dashes
+          .replace(/^-+|-+$/g, '');   // trim leading/trailing
+      });
+
+    eleventyConfig.addFilter("money", function(value) {
+        return value.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    });
+
+    eleventyConfig.addFilter("float", function(value) {
+        return value.toLocaleString('en-US');
+    });
+
     /**=====================================================================
                                     END FILTERS
     =======================================================================*/

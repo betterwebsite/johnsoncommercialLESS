@@ -858,201 +858,160 @@ eleventyNavigation:
 
 
 <!-- filtering -->
-
-<!-- address filter -->
 <script>
   const searchInput = document.getElementById("search-input");
-  const listingCards = document.querySelectorAll(".listing-card");
+  const listingTypeSelect = document.getElementById("listing-type-filter");
+  const minSFInput = document.getElementById("min-sf");
+  const maxSFInput = document.getElementById("max-sf");
+  const propertyCheckboxes = document.querySelectorAll('.multi-options input[type="checkbox"]');
+
+  const filterState = {
+    searchQuery: "",
+    propertyTypes: new Set([...propertyCheckboxes].filter(cb => cb.value !== "all").map(cb => cb.value)),
+    listingType: "all",
+    minSF: 0,
+    maxSF: Infinity
+  };
 
   function normalize(str) {
     return str.toLowerCase().replace(/\s+/g, '');
   }
 
-  searchInput.addEventListener("input", function () {
-    const query = normalize(this.value);
+  function applyCombinedFilters() {
     const cards = document.querySelectorAll(".listing-card");
-    
-    allMarkers.forEach(marker => marker.remove()); // Clear all
-    let visibleMarkers = 0;
+    allMarkers.forEach(marker => marker.remove());
+    let visibleMarkers = [];
 
     cards.forEach(card => {
-      const address = normalize(card.querySelector(".listing-title").textContent);
-      const fullText = card.querySelector(".listing-title").textContent;
-      
-      if (address.includes(query)) {
-        card.style.display = "flex";
+      const prop = (card.dataset.property || "").toLowerCase();
+      const type = (card.dataset.type || "").toLowerCase();
+      const sf = parseInt(card.dataset.sf) || 0;
+      const addressText = card.querySelector(".listing-title").textContent.trim();
+      const normalizedAddress = normalize(addressText);
 
-        // Highlight the matching part
-        const regex = new RegExp(`(${this.value})`, 'ig');
-        const highlighted = fullText.replace(regex, `<span style="color:black;">$1</span>`);
+      const matchesSearch = normalizedAddress.includes(filterState.searchQuery);
+      const matchesType = filterState.listingType === "all" || type === filterState.listingType;
+      const matchesProperty = filterState.propertyTypes.has(prop);
+      const matchesSF = sf >= filterState.minSF && sf <= filterState.maxSF;
+
+      const show = matchesSearch && matchesType && matchesProperty && matchesSF;
+      card.style.display = show ? "flex" : "none";
+
+      const lat = parseFloat(card.dataset.lat);
+      const lng = parseFloat(card.dataset.lng);
+      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
+      if (marker && show) {
+        marker.addTo(map);
+        visibleMarkers.push(marker.getLatLng());
+      }
+
+      if (matchesSearch && show) {
+        const regex = new RegExp(`(${filterState.searchQuery})`, 'ig');
+        const highlighted = addressText.replace(regex, `<span style="color:black;">$1</span>`);
         card.querySelector(".listing-title").innerHTML = highlighted;
-
-        // Add marker back
-        const lat = parseFloat(card.dataset.lat);
-        const lng = parseFloat(card.dataset.lng);
-        const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-        if (marker) {
-          marker.addTo(map);
-          visibleMarkers++;
-        }
       } else {
-        card.style.display = "none";
+        card.querySelector(".listing-title").textContent = addressText;
       }
     });
 
-    if (visibleMarkers > 0) {
-      const bounds = L.latLngBounds(
-        Array.from(allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng()))
-      );
-      map.fitBounds(bounds, { padding: [50, 50] });
+    if (visibleMarkers.length > 0) {
+      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
     }
+  }
+
+  // === Event Listeners ===
+  searchInput.addEventListener("input", function () {
+    filterState.searchQuery = normalize(this.value);
+    applyCombinedFilters();
   });
-</script>
-
-
-<!-- listing type filter -->
-<script>
-  const listingTypeSelect = document.getElementById("listing-type-filter");
 
   listingTypeSelect.addEventListener("change", function () {
-    const selected = this.value;
-
-    document.querySelectorAll(".listing-card").forEach(card => {
-      const type = card.dataset.type;
-
-      const matches = (selected === "all") || (type === selected);
-      card.style.display = matches ? "flex" : "none";
-
-      // Find the marker
-      const lat = parseFloat(card.dataset.lat);
-      const lng = parseFloat(card.dataset.lng);
-      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-
-      if (marker) {
-        if (matches) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
-      }
-    });
-
-    // Fit map to visible markers
-    const visibleMarkers = allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng());
-    if (visibleMarkers.length) {
-      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
-    }
-  });
-</script>
-
-
-<!-- min max sf filter -->
-<script>
-  const minSFInput = document.getElementById("min-sf");
-  const maxSFInput = document.getElementById("max-sf");
-
-  function filterBySF() {
-    const minSF = parseInt(minSFInput.value) || 0;
-    const maxSF = parseInt(maxSFInput.value) || Infinity;
-
-    document.querySelectorAll(".listing-card").forEach(card => {
-      const sf = parseInt(card.dataset.sf) || 0;
-
-      const matches = sf >= minSF && sf <= maxSF;
-      card.style.display = matches ? "flex" : "none";
-
-      const lat = parseFloat(card.dataset.lat);
-      const lng = parseFloat(card.dataset.lng);
-      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-
-      if (marker) {
-        if (matches) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
-      }
-    });
-
-    const visibleMarkers = allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng());
-    if (visibleMarkers.length) {
-      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
-    }
-  }
-
-  minSFInput.addEventListener("input", filterBySF);
-  maxSFInput.addEventListener("input", filterBySF);
-</script>
-
-<!-- property type filter -->
-<script>
-  const propertyCheckboxes = document.querySelectorAll('.multi-options input[type="checkbox"]');
-  let activePropertyTypes = new Set();
-
-  // Initialize with all selected (including "all")
-  propertyCheckboxes.forEach(cb => {
-    if (cb.value !== 'all') activePropertyTypes.add(cb.value);
+    filterState.listingType = this.value.toLowerCase();
+    applyCombinedFilters();
   });
 
-  function filterByPropertyType() {
-    const selected = [...activePropertyTypes];
-
-    document.querySelectorAll(".listing-card").forEach(card => {
-      const propType = (card.dataset.property || "").toLowerCase();
-      const matches = selected.includes(propType);
-      card.style.display = matches ? "flex" : "none";
-
-      const lat = parseFloat(card.dataset.lat);
-      const lng = parseFloat(card.dataset.lng);
-      const marker = allMarkers.find(m => m.getLatLng().lat === lat && m.getLatLng().lng === lng);
-      if (marker) {
-        if (matches) {
-          marker.addTo(map);
-        } else {
-          marker.remove();
-        }
-      }
-    });
-
-    const visibleMarkers = allMarkers.filter(m => map.hasLayer(m)).map(m => m.getLatLng());
-    if (visibleMarkers.length) {
-      map.fitBounds(L.latLngBounds(visibleMarkers), { padding: [50, 50] });
-    }
+  function updateSFRange() {
+    filterState.minSF = parseInt(minSFInput.value) || 0;
+    filterState.maxSF = parseInt(maxSFInput.value) || Infinity;
+    applyCombinedFilters();
   }
+
+  minSFInput.addEventListener("input", updateSFRange);
+  maxSFInput.addEventListener("input", updateSFRange);
 
   propertyCheckboxes.forEach(cb => {
     cb.addEventListener("change", () => {
-      if (cb.value === 'all') {
-        // Toggle all checkboxes
-        const isChecked = cb.checked;
+      const isAll = cb.value === "all";
+      const selectAllBox = document.querySelector('input[value="all"]');
+
+      if (isAll) {
+        filterState.propertyTypes.clear();
         propertyCheckboxes.forEach(other => {
-          if (other.value !== 'all') {
-            other.checked = isChecked;
-            if (isChecked) {
-              activePropertyTypes.add(other.value);
-            } else {
-              activePropertyTypes.delete(other.value);
-            }
-          }
+          other.checked = true;
+          if (other.value !== 'all') filterState.propertyTypes.add(other.value);
         });
       } else {
-        // Individual checkbox toggled
-        if (cb.checked) {
-          activePropertyTypes.add(cb.value);
+        if (selectAllBox.checked) {
+          selectAllBox.checked = false;
+          filterState.propertyTypes.clear();
+          propertyCheckboxes.forEach(other => {
+            if (other.value !== "all") other.checked = false;
+          });
+          cb.checked = true;
+          filterState.propertyTypes.add(cb.value);
         } else {
-          activePropertyTypes.delete(cb.value);
-        }
+          if (cb.checked) {
+            filterState.propertyTypes.add(cb.value);
+          } else {
+            filterState.propertyTypes.delete(cb.value);
+          }
 
-        // Update "Select All" state
-        const allOther = [...propertyCheckboxes].filter(i => i.value !== 'all');
-        const allChecked = allOther.every(i => i.checked);
-        document.querySelector('input[value="all"]').checked = allChecked;
+          if (filterState.propertyTypes.size === 0) {
+            selectAllBox.checked = true;
+            propertyCheckboxes.forEach(other => {
+              if (other.value !== 'all') {
+                other.checked = true;
+                filterState.propertyTypes.add(other.value);
+              }
+            });
+          }
+        }
       }
 
-      filterByPropertyType();
+      applyCombinedFilters();
     });
   });
+
+  // === Reset Button ===
+  const resetBtn = document.createElement("button");
+  resetBtn.textContent = "Reset Filters";
+  resetBtn.className = "btn";
+  resetBtn.style.backgroundColor = "#999";
+  document.getElementById("filter-bar-inline").appendChild(resetBtn);
+
+  resetBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    filterState.searchQuery = "";
+
+    listingTypeSelect.value = "all";
+    filterState.listingType = "all";
+
+    minSFInput.value = "";
+    maxSFInput.value = "";
+    filterState.minSF = 0;
+    filterState.maxSF = Infinity;
+
+    filterState.propertyTypes.clear();
+    propertyCheckboxes.forEach(cb => {
+      cb.checked = true;
+      if (cb.value !== "all") filterState.propertyTypes.add(cb.value);
+    });
+    document.querySelector('input[value="all"]').checked = true;
+
+    applyCombinedFilters();
+  });
 </script>
+
 
     
 {% endblock %}
