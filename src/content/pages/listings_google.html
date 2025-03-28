@@ -502,7 +502,7 @@ eleventyNavigation:
 </div>
 
 
-<script>
+<script defer>
   let map;
   let markers = [];
   let allMarkers = [];
@@ -619,7 +619,7 @@ eleventyNavigation:
   }
   </script>
 
-    <script>
+    <script defer>
       window.onload = function () {
         const nav = document.getElementById("cs-navigation");
         const map = document.getElementById("map");
@@ -631,7 +631,7 @@ eleventyNavigation:
         }
       };
     </script>
-    <script>
+    <script defer>
       function adjustMapSize() {
         const nav = document.getElementById("cs-navigation");
         const container = document.getElementById("container");
@@ -685,7 +685,7 @@ eleventyNavigation:
 
 
 
-<script>
+<script defer>
   function toggleView() {
     
     const container = document.getElementById("container");
@@ -722,7 +722,7 @@ eleventyNavigation:
 
 
 
-<script>
+<script defer>
   document.addEventListener('DOMContentLoaded', function () {
     const toggle = document.querySelector('.dropdown-toggle');
     const menu = document.querySelector('.dropdown-menu');
@@ -750,7 +750,7 @@ eleventyNavigation:
 
 </script>
 
-<script>
+<script defer>
   const searchInput = document.getElementById("search-input");
   const listingTypeSelect = document.getElementById("listing-type-filter");
   const minSFInput = document.getElementById("min-sf");
