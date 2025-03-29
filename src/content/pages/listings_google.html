@@ -15,11 +15,7 @@ eleventyNavigation:
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-  <!-- Google JS -->
-  <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCL2hIkZRxsZeKQhHXbdChn7tPd3FVY5LQ&callback=initMap&loading=async"
-  >
-  </script>
+
 
   <style>
     #container {
@@ -462,13 +458,13 @@ eleventyNavigation:
     {% endfor %}
 
     <div class="listing-card"
-     href="/properties/{{ listing.address | slugify }}.html"
+     href="/properties/{{ listing.address | slugify }}"
      data-lat="{{ listing.location.lat }}"
      data-lng="{{ listing.location.lng }}"
      data-type="{{ listing.listing_type }}"
      data-sf="{{ total_sf }}"
      data-property="{{ listing.property_type | lower }}"
-     onclick="window.location.href='/properties/{{ listing.address | slugify }}.html'">
+     onclick="window.location.href='/properties/{{ listing.address | slugify }}'">
 
       <div class="image-wrapper">
         <img src="{{ listing.image }}" alt="{{ listing.address }}">
@@ -480,7 +476,7 @@ eleventyNavigation:
         <div class="listing-title">{{ listing.address }}</div>
         <div class="listing-sub">
           {% if listing.price.sale_price %}
-            ${{ listing.price.sale_price | int }}
+            {{ listing.price.sale_price | money }}
           {% elif listing.price.lease_rate %}
             {{ listing.price.lease_rate }}
           {% endif %}
@@ -488,9 +484,9 @@ eleventyNavigation:
       </div>
       <div class="hover-details">
         <div><strong>Address:</strong> {{ listing.address }}</div>
-        <div><strong>Square Feet:</strong> {{ listing.buildings[0].square_feet or "N/A" }}</div>
-        <div><strong>Lot Acres:</strong> {{ listing.buildings[0].lot_acres or "N/A" }}</div>
-        <div><strong>Year Built:</strong> {{ listing.buildings[0].year_built or "N/A" }}</div>
+        {% if listing.buildings[0].square_feet %}<div><strong>Square Feet:</strong> {{ listing.buildings[0].square_feet | float}}</div>{% endif %}
+        {% if listing.buildings[0].lot_acres %}<div><strong>Lot Acres:</strong> {{ listing.buildings[0].lot_acres | float }}</div>{% endif %}
+        {% if listing.buildings[0].year_built %}<div><strong>Year Built:</strong> {{ listing.buildings[0].year_built or "N/A" }}</div>{% endif %}
       </div>
     </div>
     {% endfor %}
@@ -527,9 +523,9 @@ eleventyNavigation:
     const lng = {{ listing.location.lng or 0 }};
     const title = "{{ listing.address | escape }}";
     const imageUrl = "{{ listing.image }}";
-    const price = {% if listing.price.sale_price %}"${{ listing.price.sale_price | int }}"{% elif listing.price.lease_rate %}"{{ listing.price.lease_rate }}"{% else %}"N/A"{% endif %};
-    const squareFeet = "{{ listing.buildings[0].square_feet or 'N/A' }} Sq Ft";
-    const lotSize = "{{ listing.buildings[0].lot_acres or 'N/A' }} acres";
+    const price = {% if listing.price.sale_price %}"{{ listing.price.sale_price | money }}"{% elif listing.price.lease_rate %}"{{ listing.price.lease_rate }}"{% else %}"N/A"{% endif %};
+    const squareFeet = addCommasToFloat("{{ listing.buildings[0].square_feet or 'N/A' }}") +"Sq Ft";
+    const lotSize = addCommasToFloat("{{ listing.buildings[0].lot_acres or 'N/A' }}") + "acres";
     const status = "{{ listing.listing_type | capitalize | replace("both", "For Sale/Lease") }}";
     const address = "{{ listing.address | escape }}";
     const agentName = "{{ listing.agent_name | escape }}";
@@ -589,10 +585,10 @@ eleventyNavigation:
       icon: {
         url:
           status === "Sale"
-            ? "/assets/images/pins/geo-alt-red2.svg"
+            ? "/assets/images/pins/pin-red.svg"
             : status === "Lease"
-            ? "/assets/images/pins/geo-alt-blue2.svg"
-            : "/assets/images/pins/geo-alt-black2.svg",
+            ? "/assets/images/pins/pin-blue.svg"
+            : "/assets/images/pins/pin-black.svg",
         scaledSize: new google.maps.Size(40, 40),
       },
     });
@@ -916,8 +912,25 @@ document.getElementById("reset-filters").addEventListener("click", () => {
 
 </script>
 
+<script>
+  function addCommasToFloat(number) {
+    return number.toLocaleString('en-US');
+  }
+  
+  function formatToUSDollars(amount) {
+    return amount.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    });
+  }
+  </script>
 
 
-
-    
+  <!-- Google JS -->
+  <script async defer
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCL2hIkZRxsZeKQhHXbdChn7tPd3FVY5LQ&callback=initMap&loading=async"
+  >
+  </script>    
 {% endblock %}

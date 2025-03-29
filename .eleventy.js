@@ -14,7 +14,7 @@ const filterPostDate = require("./src/config/postDate");
 const isProduction = configServer.isProduction;
 const eleventyPluginSharpImages = require("@codestitchofficial/eleventy-plugin-sharp-images");
 
-
+const markdownIt = require("markdown-it");
 module.exports = function (eleventyConfig) {
     /**=====================================================================
           EXTENSIONS - Recognising non-default languages as templates 
@@ -122,6 +122,11 @@ module.exports = function (eleventyConfig) {
             minimumFractionDigits: 0,
             maximumFractionDigits: 0
         });
+    });
+    
+    const md = new markdownIt({ html: true });
+    eleventyConfig.addFilter("markdownify", str => {
+        return md.render(str || "");
     });
 
     eleventyConfig.addFilter("float", function(value) {
