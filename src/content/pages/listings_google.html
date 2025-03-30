@@ -458,13 +458,13 @@ eleventyNavigation:
     {% endfor %}
 
     <div class="listing-card"
-     href="/properties/{{ listing.address | slugify }}.html"
+     href="/properties/{{ listing.address | slugify }}"
      data-lat="{{ listing.location.lat }}"
      data-lng="{{ listing.location.lng }}"
      data-type="{{ listing.listing_type }}"
      data-sf="{{ total_sf }}"
      data-property="{{ listing.property_type | lower }}"
-     onclick="window.location.href='/properties/{{ listing.address | slugify }}.html'">
+     onclick="window.location.href='/properties/{{ listing.address | slugify }}'">
 
       <div class="image-wrapper">
         <img src="{{ listing.image }}" alt="{{ listing.address }}">
