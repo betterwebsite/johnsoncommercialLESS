@@ -148,7 +148,7 @@ function formatToUSDollars(amount) {
           </label>
           <button class="cs-button-solid cs-submit">Contact</button>
           {% if property.pdf_url %}
-              <a href="pdf_url" target="_blank" class="cs-button-solid cs-submit">Print Flier</a>
+              <a href="{{ property.pdf_url }}" target="_blank" class="cs-button-solid cs-submit">Print Flier</a>
               {% endif %}
         </form>
         
