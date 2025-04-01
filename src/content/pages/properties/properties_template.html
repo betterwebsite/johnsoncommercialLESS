@@ -362,19 +362,46 @@ function formatToUSDollars(amount) {
   <!-- </div> -->
 {% endif %}
 
-{% if property.additional_images2 %}
+{% if property.additional_images %}
   <div id="lightgallery" class="gallery-grid container_mosaic">
-    {% for img in property.additional_images2 %}
-    <div class="tile">
-      <a href="{{ img }}">
-        <img src="{{ img }}" alt="Additional Image" />
-    </a>
-    </div>
+    {% for img in property.additional_images %}
+      <div class="tile">
+        {% if loop.index0 <= 10 %}
+        <a href="{{ img }}">
+          <img src="{{ img }}" alt="Additional Image" />
+          {% if loop.index0 == 10 %}
+            <div class="overlay">View All</div>
+          {% endif %}
+          
+        </a>
+        {% else %}
+        <a href="{{ img }}">
+        <img src="{{ img }}" alt="Additional Image" style="display: none;">
+        </a>
+        {% endif %}
+      </div>
     {% endfor %}
   </div>
 {% endif %}
+
 </div>
-                      
+<style>
+  .tile {
+    position: relative;
+  }
+  .overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 6px 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    pointer-events: none;
+  }
+  </style>      
 
 
 <section id="services-1064">
