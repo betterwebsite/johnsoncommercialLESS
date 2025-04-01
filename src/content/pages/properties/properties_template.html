@@ -6,7 +6,7 @@ pagination:
   addAllPagesToCollections: true
 permalink: "properties/{{ property.address | slugify }}/"
 ---
-{% extends "layouts/base_nofooter.html" %}
+{% extends "layouts/base.html" %}
 {% block head %}
     <title>{{ property.address }} | JohnsonCommercialGroup</title>
     <link rel="stylesheet" href="/assets/css/projects.css">
@@ -147,7 +147,11 @@ function formatToUSDollars(amount) {
               <input class="cs-input" required type="tel" id="phone-2041" name="phone" placeholder="Phone number">
           </label>
           <button class="cs-button-solid cs-submit">Contact</button>
-      </form>
+          {% if property.pdf_url %}
+              <a href="pdf_url" target="_blank" class="cs-button-solid cs-submit">Print Flier</a>
+              {% endif %}
+        </form>
+        
   </div>
 
   <!-- Background Image -->
@@ -168,7 +172,8 @@ function formatToUSDollars(amount) {
 <!-- ============================================ -->
 <!--                  Services                    -->
 <!-- ============================================ -->
-<div id="split">
+
+
 <section id="services-1064">
   <div class="cs-container">
       <div class="cs-content">
@@ -180,6 +185,14 @@ function formatToUSDollars(amount) {
             {% endif %}
           </p>
       </div>
+  </div>
+</section>
+
+<div id="split">
+<section id="services-1064">
+  <div class="cs-container">
+
+      <span class="cs-topper">Summary</span>
       <ul class="cs-card-group">
         {% if property.price.sale_price or property.price.lease_rate%}
           <li class="cs-item">
@@ -249,7 +262,12 @@ function formatToUSDollars(amount) {
                 <h3 class="cs-h3"><strong>Year Built</strong></h3>
             </h3>
               <p class="cs-item-text">
-                  <p class="price">{{ property.buildings[0].year_built }}</p>
+                  <p class="price">
+                    {% for b in property.buildings %}
+                    {% if b.year_built %}
+                      Building {{ loop.index }}: {{ b.year_built }}<br>
+                    {% endif %}
+                  {% endfor %}
               </p>
             </div>
           </li>
@@ -344,9 +362,9 @@ function formatToUSDollars(amount) {
   <!-- </div> -->
 {% endif %}
 
-{% if property.additional_images %}
+{% if property.additional_images2 %}
   <div id="lightgallery" class="gallery-grid container_mosaic">
-    {% for img in property.additional_images %}
+    {% for img in property.additional_images2 %}
     <div class="tile">
       <a href="{{ img }}">
         <img src="{{ img }}" alt="Additional Image" />
@@ -359,7 +377,16 @@ function formatToUSDollars(amount) {
                       
 
 
-
+<section id="services-1064">
+  <div class="cs-container">
+      <div class="cs-content">
+          <span class="cs-topper">Disclaimer</span>
+          <p class="cs-text">
+            A real estate broker is not authorized to give legal or tax advice. No representation is made by Johnson Commercial Group or Brick & Beam Realty, its agents or employees, as to the legal effect or tax consequences of the information contained herein or any transaction relating thereto. Although all information furnished regarding property sales or financing options are from sources deemed to be reliable, such information has not been verified and no express representation is made on, or is in any way implied as to the accuracy thereof and is subject to errors, omissions, change of price, or other conditions prior to sale or withdrawal without notice.
+          </p>
+      </div>
+  </div>
+</section>
 
 
 <style>
