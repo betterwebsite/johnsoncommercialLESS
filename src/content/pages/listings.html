@@ -464,7 +464,7 @@ eleventyNavigation:
      data-type="{{ listing.listing_type }}"
      data-sf="{{ total_sf }}"
      data-property="{{ listing.property_type | lower }}"
-     onclick="window.location.href='https://localhost:8080/{{ listing.address | urlencode }}'">
+     onclick="window.location.href='/properties/{{ listing.address | slugify }}'">
 
 
 
@@ -593,25 +593,22 @@ eleventyNavigation:
     // map.addControl(new FilterControl());
 
     // Marker icon generator
-    function getColoredIcon(color) {
-      return new L.Icon({
-        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+    function getSvgIcon(color) {
+  return L.icon({
+        iconUrl: `/assets/images/pins/pin-${color}.svg`,
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40],
       });
     }
 
-    // Define colored icons
-    const redIcon = getColoredIcon("red");
-    const purpleIcon = getColoredIcon("violet"); // violet = purple
-    const blackIcon = getColoredIcon("black");
-    const blueIcon = getColoredIcon("blue");
+    const redIcon = getSvgIcon("red");
+    const blueIcon = getSvgIcon("blue");
+    const blackIcon = getSvgIcon("black");
+    const purpleIcon = getSvgIcon("purple"); // or "violet" if you keep the naming
 
     // Function to add a marker to the map and store its category for filtering
-    function addMarker({ lat, lng, color, title, imageUrl, price, squareFeet, lotSize, status, address, agentName, agentUrl, language }) {
+    function addMarker({ lat, lng, color, title, imageUrl, price, squareFeet, lotSize, status, address, agentName, agentUrl, language, type }) {
       let icon;
       if (color === "red") icon = redIcon;
       else if (color === "purple") icon = purpleIcon;
@@ -627,7 +624,8 @@ eleventyNavigation:
       const popupHtml = `
         <div style="position: relative;">
           <img src="${imageUrl}" alt="${title}" style="width: 100%; height: auto; display: block;">
-          <div style="position: absolute; top: 8px; left: 8px; background-color: black; color: white; padding: 2px 6px; font-size: 12px; border-radius: 3px;">${status}</div>
+          <div class="status-badge ${status.toLowerCase()}">${status}</div>
+
         </div>
         <div style="padding: 10px;">
           <div style="font-size: 18px; font-weight: bold;">${price}</div>
@@ -707,20 +705,22 @@ eleventyNavigation:
         }[type] %}
 
         addMarker({
-          status: "{{ marker.status }}",
-          language: "{{ marker.language }}",
-          color: "{{ marker.color }}",
-          lat: {{ listing.location.lat or 0 }},
-          lng: {{ listing.location.lng or 0 }},
-          title: address,
-          imageUrl: listingImage,
-          price: formattedPrice,
-          squareFeet: formattedSqFt,
-          lotSize: lotAcres,
-          address: address,
-          agentName: agent_name,
-          agentUrl: "https://example.com/red"
-        });
+  status: "{{ listing.listing_type | capitalize | replace('both', 'For Sale/Lease') }}",
+  color: "{% if listing.listing_type == 'sale' %}red{% elif listing.listing_type == 'lease' %}blue{% elif listing.listing_type == 'sold' %}black{% elif listing.listing_type == 'both' %}purple{% else %}red{% endif %}",
+  language: "{% if listing.listing_type == 'sale' %}For Sale{% elif listing.listing_type == 'lease' %}For Lease{% elif listing.listing_type == 'sold' %}Sold{% elif listing.listing_type == 'both' %}For Sale/Lease{% endif %}",
+
+  lat: {{ listing.location.lat or 0 }},
+  lng: {{ listing.location.lng or 0 }},
+  title: "{{ listing.address }}",
+  imageUrl: "{{ listing.image }}",
+  price: "{% if (listing.listing_type == 'lease' or listing.listing_type == 'both') and not listing.price.sale_price and listing.price.lease_rate %}{{ listing.price.lease_rate }}{% else %}{{ listing.price.sale_price | money }}{% endif %}",
+  squareFeet: "{% set sqftA = listing.buildings[0].square_feet or 0 %}{% set sqftB = listing.buildings[1].square_feet or 0 %}{% if listing.buildings.length == 1 %}{{ sqftA | float }} Sqf{% elif listing.buildings.length == 2 %}A: {{ sqftA | float }} Sqf / B: {{ sqftB | float}} Sqf{% elif listing.buildings.length > 2 %}A: {{ sqftA | float }} Sqf / B: {{ sqftB | float }} Sqf...{% else %}N/A{% endif %}",
+  lotSize: "{% if listing.buildings and listing.buildings[0].lot_acres %}{{ listing.buildings[0].lot_acres | float }} acres - {% else %}{% endif %}",
+  address: "{{ listing.address }}",
+  agentName: "{{ listing.agent_name }}",
+  agentUrl: "/properties/{{ listing.address | slugify }}"
+});
+
       {% endif %}
     {% endfor %}
   </script>
