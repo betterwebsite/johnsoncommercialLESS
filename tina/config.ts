@@ -1,9 +1,11 @@
 import { defineConfig } from "tinacms";
+import "dotenv/config";
+
 
 export default defineConfig({
   branch: "main",
-  clientId: "70168c56-eee5-4c77-a613-0636ffccc0ad", // Not needed for local dev
-  token: "b0e3a480ab22ab38ec5eb71a472903451aafb408",
+  clientId: process.env.TINA_PUBLIC_CLIENT_ID!, // Not needed for local dev
+  token: process.env.TINA_TOKEN!,
   media: {
     loadCustomStore: async () => {
       return {
@@ -19,7 +21,7 @@ export default defineConfig({
   },
   build: {
     outputFolder: "admin",
-    publicFolder: "public", // or your Eleventy output folder
+    publicFolder: "src", // or your Eleventy output folder
   },
   schema: {
     collections: [

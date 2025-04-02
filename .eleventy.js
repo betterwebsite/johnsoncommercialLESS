@@ -88,9 +88,12 @@ module.exports = function (eleventyConfig) {
             "!**/*.js"
         ]
     });
-    eleventyConfig.addPassthroughCopy("./src/admin");
-    eleventyConfig.addPassthroughCopy("./src/_redirects");
-    eleventyConfig.addPassthroughCopy("./admin"); // TinaCMS static admin UI
+    // eleventyConfig.addPassthroughCopy("./src/admin");
+    // eleventyConfig.addPassthroughCopy("./src/_redirects");
+    eleventyConfig.addPassthroughCopy("./admin"); // match old Decap passthrough
+
+    // eleventyConfig.addPassthroughCopy({ "public/admin": "admin" });
+
 
     /**=====================================================================
                               END PASSTHROUGHS
