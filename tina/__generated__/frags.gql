@@ -1,0 +1,49 @@
+fragment ListingsParts on Listings {
+  __typename
+  listings {
+    __typename
+    address
+    listing_type
+    property_type
+    pdf_url
+    image
+    additional_images {
+      __typename
+      url
+    }
+    price {
+      __typename
+      sale_price
+      lease_rate
+      price_per
+    }
+    misc {
+      __typename
+      traffic
+      caprate
+      zoning
+      parcelid
+    }
+    location {
+      __typename
+      city
+      state
+      zipcode
+      lat
+      lng
+    }
+    buildings {
+      __typename
+      square_feet
+      lot_acres
+      year_built
+    }
+    sections {
+      __typename
+      section_name
+      section_description
+    }
+    description
+    agent_name
+  }
+}
