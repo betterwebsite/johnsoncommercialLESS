@@ -1,0 +1,40 @@
+# Site-wide settings
+_inputs:
+  layout:
+    hidden: true
+  permalink:
+    hidden: true
+
+# Content editor configurations  
+_editables:
+  text:
+    bold: true
+    italic: true
+    link: true
+  content:
+    blockquote: true
+    bold: true
+    italic: true
+    link: true
+    bulletedlist: true
+    numberedlist: true
+    image: true
+    table: true
+
+# Collection configurations
+collections_config:
+  blog:
+    path: src/content/blog
+    output: true
+    url: /blog/[slug]/
+  listings:
+    path: src/_data/listings.json
+    output: false
+  settings:
+    path: src/_data/client.json
+    output: false
+
+paths:
+  uploads: src/assets/images/cms
+  static: public
+  data: src/_data

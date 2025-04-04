@@ -1,23 +1,12 @@
 backend:
-    name: git-gateway
-    branch: main
+    name: cloudcannon
 
-media_library:
-  name: uploadcare
-  config:
-    publicKey: 4bb2bfa91b9bf261537f
+# Updated `logo_url` to ensure compatibility with CloudCannon
+logo_url: "https://images.squarespace-cdn.com/content/v1/63402aad59ee1e64a2820c16/d642cb81-902a-42a7-87e3-8651e05ee6ef/405.435.3572.png"
 
-
-local_backend: true
-
-# Change url to a link to the image you want to use, no file paths, must be a URL
-logo_url: "https://images.squarespace-cdn.com/content/v1/63402aad59ee1e64a2820c16/d642cb81-902a-42a7-87e3-8651e05ee6ef/405.435.3572.png?format=2500w%202500w"
-
-# Where should uploaded files be saved
-media_folder: src/assets/images/cms
-
-# Where should media be served, relative to the base of the built site
-public_folder: /assets/images/cms
+# Updated paths for media to align with CloudCannon's conventions
+media_folder: /uploads
+public_folder: /uploads
 
 collections:
     # SETTINGS CONFIG
@@ -34,7 +23,7 @@ collections:
             fields:
                 - label: Business Name
                   name: name
-                  widget: string
+                  widget: text
                   summary: Used in browser tab and sharing links
 
                 - label: Email

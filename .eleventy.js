@@ -88,8 +88,9 @@ module.exports = function (eleventyConfig) {
             "!**/*.js"
         ]
     });
-    eleventyConfig.addPassthroughCopy("./src/admin");
     eleventyConfig.addPassthroughCopy("./src/_redirects");
+    eleventyConfig.addPassthroughCopy("./src/admin");
+    // Ensure admin files are copied to the output directory
     /**=====================================================================
                               END PASSTHROUGHS
     =======================================================================*/

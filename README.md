@@ -7,7 +7,7 @@
   <h3 align="center">Intermediate Starter Kit (LESS)</h3>
 
   <p align="center">
-    Introducing the Intermediate Website Kit, presented by CodeStitch. This kit includes a pre-configured Eleventy environment with Nunjucks templating, along with seamless integration of Decap CMS. This setup allows you to quickly start a project while providing your client with a blog for content management. Everything is ready to go right from the start, offering a fantastic introduction to the advantages of a Static Site Generator, complete with LESS preprocessing.
+    Introducing the Intermediate Website Kit, presented by CodeStitch. This kit includes a pre-configured Eleventy environment with Nunjucks templating, along with seamless integration of CloudCannon CMS. This setup allows you to quickly start a project while providing your client with a blog for content management. Everything is ready to go right from the start, offering a fantastic introduction to the advantages of a Static Site Generator, complete with LESS preprocessing.
     <br/>
     <br/>
     <a href="https://github.com/CodeStitchOfficial/Intermediate-Website-Kit-SASS">SASS Starter Kit</a>
@@ -54,7 +54,7 @@
 
 ## Overview
 
-The Intermediate Website Kit builds off the beginner kits, mainly by including a pre-configured [Eleventy](https://www.11ty.dev) environment. This setup allows for reusable components, centralized data, and greater scalability as your clients grow. Additionally, a blog has been provided through [Decap CMS](https://decapcms.org/), enabling your clients to manage their own content. This can easily be adapted to various use cases, such as menus, job listing boards, portfolios, and more. A few additional plugins have also been included to enhance the developer experience, offering HTML/CSS minification, JS bundling/minification, and automatic sitemap generation.
+The Intermediate Website Kit builds off the beginner kits, mainly by including a pre-configured [Eleventy](https://www.11ty.dev) environment. This setup allows for reusable components, centralized data, and greater scalability as your clients grow. Additionally, a blog has been provided through [CloudCannon](https://cloudcannon.com/), enabling your clients to manage their own content. This can easily be adapted to various use cases, such as menus, job listing boards, portfolios, and more. A few additional plugins have also been included to enhance the developer experience, offering HTML/CSS minification, JS bundling/minification, and automatic sitemap generation.
 
 An example website is also provided, with easy substitution of website sections through the use of [CodeStitch's vanilla component library](https://codestitch.app/). This kit aims to get any project off the ground as quickly as possible, with deployment achievable in as little as two minutes, including CMS hosting.
 
@@ -86,7 +86,7 @@ _Not required for light-medium kit usage, but helpful if you want to customise t
     -   [Layouts](https://www.11ty.dev/docs/layouts/)
     -   [Permalinks](https://www.11ty.dev/docs/permalinks/)
     -   [Passthroughs](https://www.11ty.dev/docs/copy/)
--   Decap CMS ([Docs found here](https://decapcms.org/docs/intro/))
+-   CloudCannon ([Docs found here](https://cloudcannon.com/docs/))
 
 <a name="quick-start-guide"></a>
 
@@ -255,11 +255,7 @@ Note the if-check in the `class` attribute of the anchor element. Here, we're ch
 
 #### admin/
 
-The `admin/` directory sets up [Decap CMS](https://decapcms.org/) to be used within the project. It's configured as a blog that a client can access by navigating to the `/admin/` path on the deployed site, where they can create, update, and delete blog posts whenever they want. This modifies the markdown files in the source code, which will trigger a rebuild in Netlify, incorporating the new blog data. After about one minute, the client can see the new blog post on the website.
-
-Decap CMS has been chosen due to its open-source nature, good UX/DX, and stability. Very little training is required on the client's end to get it to work - the interface is clean and operates without trouble. It works through an `index.html` file in the `admin/` directory that contains a CDN script for the CMS. This `index.html` file is processed as an Eleventy template, added to `/public/admin`, and the CMS is loaded when navigating to the `/admin` path.
-
-The CMS is configured through a `config.yml` file, as per the Decap documentation. If you wish to use the blog as-is, you shouldn't need to make any changes here. If you want to extend the kit and modify the CMS for your own needs, we recommend referring to the Decap documentation for guidance on how to do so.
+The `admin/` directory sets up [CloudCannon](https://cloudcannon.com/) to be used within the project. It's configured as a CMS that a client can access by navigating to the `/admin/` path on the deployed site, where they can create, update, and delete content. CloudCannon integrates directly with your Git repository to manage content.
 
 <a name="assets"></a>
 
