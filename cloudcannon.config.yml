@@ -38,3 +38,37 @@ paths:
   uploads: src/assets/images/cms
   static: public
   data: src/_data
+source: /src/
+collections_config:
+  pages:
+    path: ''
+    name: Pages
+    icon: wysiwyg
+  admin:
+    path: admin
+    name: Admin
+    icon: adb
+  admin_decap:
+    path: admin-decap
+    name: Admin Decap
+    icon: add_card
+  content:
+    path: content
+    name: Content
+    icon: wysiwyg
+  data:
+    path: _data
+    name: Data
+    icon: data_usage
+    disable_url: true
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+paths:
+  static: ''
+  uploads: uploads
+timezone: America/Chicago
+markdown:
+  engine: commonmark
+  options:
+    html: true

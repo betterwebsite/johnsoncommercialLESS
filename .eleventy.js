@@ -91,6 +91,13 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("./src/_redirects");
     eleventyConfig.addPassthroughCopy("./src/admin");
     // Ensure admin files are copied to the output directory
+    // eleventyConfig.addPassthroughCopy("./src/admin");
+    // eleventyConfig.addPassthroughCopy("./src/_redirects");
+    eleventyConfig.addPassthroughCopy("./admin"); // match old Decap passthrough
+
+    // eleventyConfig.addPassthroughCopy({ "public/admin": "admin" });
+
+
     /**=====================================================================
                               END PASSTHROUGHS
     =======================================================================*/
